@@ -1,0 +1,5 @@
+
+server:
+  application:
+    name: 'ticket'
+  port: 8081
