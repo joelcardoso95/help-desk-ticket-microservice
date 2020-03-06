@@ -60,8 +60,7 @@ public class Ticket implements Serializable{
 	}
 
 	public Ticket(Long id, String description, String title, String applicantUsername, String applicantEmail,
-			String assigneeUsername, String assigneeEmail, LocalDateTime openedAt, LocalDateTime closedAt,
-			Category categoryId, List<Commentary> commentaries) {
+			String assigneeUsername, String assigneeEmail, LocalDateTime openedAt, Category categoryId) {
 		super();
 		this.id = id;
 		this.description = description;
@@ -71,9 +70,7 @@ public class Ticket implements Serializable{
 		this.assigneeUsername = assigneeUsername;
 		this.assigneeEmail = assigneeEmail;
 		this.openedAt = openedAt;
-		this.closedAt = closedAt;
 		this.categoryId = categoryId;
-		this.commentaries = commentaries;
 	}
 
 	public Long getId() {
