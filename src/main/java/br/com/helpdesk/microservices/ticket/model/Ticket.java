@@ -1,8 +1,8 @@
 package br.com.helpdesk.microservices.ticket.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -44,10 +44,10 @@ public class Ticket implements Serializable{
 	private String assigneeEmail;
 	
 	@Column(nullable = false)
-	private LocalDateTime openedAt;
+	private Date openedAt;
 	
 	@Column(nullable = false)
-	private LocalDateTime closedAt;
+	private Date closedAt;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
@@ -60,15 +60,13 @@ public class Ticket implements Serializable{
 	}
 
 	public Ticket(Long id, String description, String title, String applicantUsername, String applicantEmail,
-			String assigneeUsername, String assigneeEmail, LocalDateTime openedAt, Category categoryId) {
+			Date openedAt, Category categoryId) {
 		super();
 		this.id = id;
 		this.description = description;
 		this.title = title;
 		this.applicantUsername = applicantUsername;
 		this.applicantEmail = applicantEmail;
-		this.assigneeUsername = assigneeUsername;
-		this.assigneeEmail = assigneeEmail;
 		this.openedAt = openedAt;
 		this.categoryId = categoryId;
 	}
@@ -129,19 +127,19 @@ public class Ticket implements Serializable{
 		this.assigneeEmail = assigneeEmail;
 	}
 
-	public LocalDateTime getOpenedAt() {
+	public Date getOpenedAt() {
 		return openedAt;
 	}
 
-	public void setOpenedAt(LocalDateTime openedAt) {
+	public void setOpenedAt(Date openedAt) {
 		this.openedAt = openedAt;
 	}
 
-	public LocalDateTime getClosedAt() {
+	public Date getClosedAt() {
 		return closedAt;
 	}
 
-	public void setClosedAt(LocalDateTime closedAt) {
+	public void setClosedAt(Date closedAt) {
 		this.closedAt = closedAt;
 	}
 
