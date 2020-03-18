@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 @Entity
 @Table(name = "ticket")
 public class Ticket implements Serializable{
@@ -53,6 +55,7 @@ public class Ticket implements Serializable{
 	@JoinColumn(name = "category_id")
 	private Category categoryId;
 	
+	@JsonSerialize
 	@OneToMany(mappedBy = "ticket")
 	private List<Commentary> commentaries = new ArrayList<>();
 	

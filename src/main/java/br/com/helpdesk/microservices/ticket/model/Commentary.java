@@ -1,7 +1,7 @@
 package br.com.helpdesk.microservices.ticket.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "commentary")
@@ -23,7 +25,7 @@ public class Commentary implements Serializable{
 	private Long id;
 	
 	@Column(nullable = false)
-	private LocalDateTime dateTime;
+	private Date dateTime;
 	
 	@Column(nullable = false)
 	private String username;
@@ -31,6 +33,7 @@ public class Commentary implements Serializable{
 	@Column(nullable = false)
 	private String message;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "ticket_id")
 	private Ticket ticket;
@@ -38,7 +41,7 @@ public class Commentary implements Serializable{
 	public Commentary() {
 	}
 
-	public Commentary(Long id, LocalDateTime dateTime, String username, String message, Ticket ticket) {
+	public Commentary(Long id, Date dateTime, String username, String message, Ticket ticket) {
 		super();
 		this.id = id;
 		this.dateTime = dateTime;
@@ -55,11 +58,11 @@ public class Commentary implements Serializable{
 		this.id = id;
 	}
 
-	public LocalDateTime getDateTime() {
+	public Date getDateTime() {
 		return dateTime;
 	}
 
-	public void setDateTime(LocalDateTime dateTime) {
+	public void setDateTime(Date dateTime) {
 		this.dateTime = dateTime;
 	}
 
