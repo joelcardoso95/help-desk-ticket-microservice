@@ -15,7 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.Length;
+
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import br.com.helpdesk.microservices.ticket.enums.TicketStatus;
 
 @Entity
 @Table(name = "ticket")
@@ -28,6 +32,7 @@ public class Ticket implements Serializable{
 	private Long id;
 	
 	@Column(nullable = false)
+	@Length(min = 25, max = 255)
 	private String description;
 	
 	@Column(nullable = false)
@@ -39,17 +44,23 @@ public class Ticket implements Serializable{
 	@Column(nullable = false)
 	private String applicantEmail;
 	
-	@Column(nullable = false)
+	@Column
 	private String assigneeUsername;
 	
-	@Column(nullable = false)
+	@Column
 	private String assigneeEmail;
 	
 	@Column(nullable = false)
 	private Date openedAt;
 	
-	@Column(nullable = false)
+	@Column
 	private Date closedAt;
+	
+	@Column
+	private String resolution;
+	
+	@Column(nullable = false)
+	private Integer status;
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
@@ -63,7 +74,7 @@ public class Ticket implements Serializable{
 	}
 
 	public Ticket(Long id, String description, String title, String applicantUsername, String applicantEmail,
-			Date openedAt, Category categoryId) {
+			Date openedAt, Category categoryId, TicketStatus status) {
 		super();
 		this.id = id;
 		this.description = description;
@@ -72,6 +83,7 @@ public class Ticket implements Serializable{
 		this.applicantEmail = applicantEmail;
 		this.openedAt = openedAt;
 		this.categoryId = categoryId;
+		this.status = (status == null) ? null : status.getCod();
 	}
 
 	public Long getId() {
@@ -162,6 +174,22 @@ public class Ticket implements Serializable{
 		this.commentaries = commentaries;
 	}
 
+	public TicketStatus getStatus() {
+		return TicketStatus.toEnum(status);
+	}
+
+	public void setStatus(TicketStatus status) {
+		this.status = status.getCod();
+	}
+
+	public String getResolution() {
+		return resolution;
+	}
+
+	public void setResolution(String resolution) {
+		this.resolution = resolution;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -176,6 +204,8 @@ public class Ticket implements Serializable{
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((openedAt == null) ? 0 : openedAt.hashCode());
+		result = prime * result + ((resolution == null) ? 0 : resolution.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -238,6 +268,16 @@ public class Ticket implements Serializable{
 			if (other.openedAt != null)
 				return false;
 		} else if (!openedAt.equals(other.openedAt))
+			return false;
+		if (resolution == null) {
+			if (other.resolution != null)
+				return false;
+		} else if (!resolution.equals(other.resolution))
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
 			return false;
 		if (title == null) {
 			if (other.title != null)

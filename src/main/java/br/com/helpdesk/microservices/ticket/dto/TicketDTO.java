@@ -2,8 +2,8 @@ package br.com.helpdesk.microservices.ticket.dto;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class TicketDTO implements Serializable{
 
@@ -15,14 +15,7 @@ public class TicketDTO implements Serializable{
 	@NotEmpty(message = "Título preenchimento obrigatório")
 	private String title;
 	
-	@NotEmpty(message = "Solicitante preenchimento obrigatório")
-	private String applicantUsername;
-	
-	@NotEmpty(message = "E-mail do solicitante preenchimento obrigatório")
-	@Email
-	private String applicantEmail;
-	
-	@NotEmpty
+	@NotNull
 	private Long categoryId;
 	
 	public TicketDTO() {
@@ -42,22 +35,6 @@ public class TicketDTO implements Serializable{
 
 	public void setTitle(String title) {
 		this.title = title;
-	}
-
-	public String getApplicantUsername() {
-		return applicantUsername;
-	}
-
-	public void setApplicantUsername(String applicantUsername) {
-		this.applicantUsername = applicantUsername;
-	}
-
-	public String getApplicantEmail() {
-		return applicantEmail;
-	}
-
-	public void setApplicantEmail(String applicantEmail) {
-		this.applicantEmail = applicantEmail;
 	}
 
 	public Long getCategoryId() {

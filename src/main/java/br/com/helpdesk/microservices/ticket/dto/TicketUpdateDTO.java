@@ -2,31 +2,24 @@ package br.com.helpdesk.microservices.ticket.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotEmpty;
+
 public class TicketUpdateDTO implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private String assigneeUsername;
-	
-	private String assigneeEmail;
+	@NotEmpty(message = "Resolução preenchimento obrigatório")
+	private String resolution;
 	
 	public TicketUpdateDTO() {
 	}
 
-	public String getAssigneeUsername() {
-		return assigneeUsername;
+	public String getResolution() {
+		return resolution;
 	}
 
-	public void setAssigneeUsername(String assigneeUsername) {
-		this.assigneeUsername = assigneeUsername;
-	}
-
-	public String getAssigneeEmail() {
-		return assigneeEmail;
-	}
-
-	public void setAssigneeEmail(String assigneeEmail) {
-		this.assigneeEmail = assigneeEmail;
+	public void setResolution(String resolution) {
+		this.resolution = resolution;
 	}
 
 }

@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 
 import br.com.helpdesk.microservices.ticket.client.SecurityClient;
 import br.com.helpdesk.microservices.ticket.dto.TicketDTO;
+import br.com.helpdesk.microservices.ticket.dto.TicketUpdateDTO;
 import br.com.helpdesk.microservices.ticket.dto.UserDTO;
+import br.com.helpdesk.microservices.ticket.enums.TicketStatus;
 import br.com.helpdesk.microservices.ticket.model.Category;
 import br.com.helpdesk.microservices.ticket.model.Ticket;
 import br.com.helpdesk.microservices.ticket.repository.CategoryRepository;
@@ -38,12 +40,7 @@ public class TicketService {
 	private SecurityClient securityClient;
 	
 	@Transactional
-	public Ticket createTicket(Ticket ticket) {
-		ticket.setId(null);
-		return ticketRepository.save(ticket);
-	}
-	
-	public Ticket updateTicket(Ticket ticket) {
+	public Ticket saveTicket(Ticket ticket) {
 		return ticketRepository.save(ticket);
 	}
 	
@@ -81,22 +78,47 @@ public class TicketService {
 		return ticketRepository.findAll(pageRequest);
 	}
 	
+	public List<Ticket> getTicketsByStatus(Integer status) {
+		return ticketRepository.findByStatus(status);
+	}
+
+	public Ticket takeOnTicket(Long id) {
+		
+		boolean isAdmin = hasRole("role_admin");
+		
+		if (!isAdmin) {
+			throw new ForbiddenException("Access Denied");
+		}
+		
+		Ticket ticket = find(id);
+		UserDTO userDTO = securityClient.loadUserInfo();
+		ticket.setAssigneeUsername(userDTO.getUsername());
+		ticket.setAssigneeEmail(userDTO.getEmail());
+		return ticket;
+	}
+	
+	public Ticket closeTicket(TicketUpdateDTO ticketUpdateDTO, Long id) {
+		
+		boolean isAdmin = hasRole("role_admin");
+		
+		if (!isAdmin) {
+			throw new ForbiddenException("Access Denied");
+		}
+		
+		Ticket ticket = find(id);
+		Date closedAt = new Date();
+		ticket.setResolution(ticketUpdateDTO.getResolution());
+		ticket.setClosedAt(closedAt);
+		ticket.setStatus(TicketStatus.CLOSED);
+		return ticket;
+	}
+	
 	public Ticket FromDTO (TicketDTO ticketDTO) {
 		Optional<Category> optionalCategory = categoryRepository.findById(ticketDTO.getCategoryId());
 		Category category = optionalCategory.get();
 		Date openedAt = new Date();
 		UserDTO userDTO = securityClient.loadUserInfo();
-		ticketDTO.setApplicantUsername(userDTO.getUsername());
-		ticketDTO.setApplicantEmail(userDTO.getEmail());
-		Ticket ticket = new Ticket(null, ticketDTO.getDescription(), ticketDTO.getTitle(), ticketDTO.getApplicantUsername(), ticketDTO.getApplicantEmail(), openedAt, category);
-		return ticket;
-	}
-	
-	public Ticket FromUpdateDTO(Long id) {
-		Ticket ticket = find(id);
-		UserDTO userDTO = securityClient.loadUserInfo();
-		ticket.setAssigneeUsername(userDTO.getUsername());
-		ticket.setAssigneeEmail(userDTO.getEmail());
+		Ticket ticket = new Ticket(null, ticketDTO.getDescription(), ticketDTO.getTitle(), userDTO.getUsername(), userDTO.getEmail(), openedAt, category, TicketStatus.OPEN);
 		return ticket;
 	}
 	
