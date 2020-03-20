@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,8 @@ import br.com.helpdesk.microservices.ticket.service.exceptions.ObjectNotFoundExc
 @Service
 public class TicketService {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(TicketService.class);
+	
 	@Autowired
 	private TicketRepository ticketRepository;
 	
@@ -41,6 +45,7 @@ public class TicketService {
 	
 	@Transactional
 	public Ticket saveTicket(Ticket ticket) {
+		LOG.info("Salvando Ticket: " + ticket.getId());
 		return ticketRepository.save(ticket);
 	}
 	
@@ -48,9 +53,11 @@ public class TicketService {
 		Optional<Ticket> ticketOptional = ticketRepository.findById(id);
 		
 		if (ticketOptional.isEmpty()) {
+			LOG.info("Ticket não encontrado: " + id);
 			throw new ObjectNotFoundException("Ticket Não Encontrado");
 		}
 		
+		LOG.info("Ticket encontrado: " + id);
 		return ticketOptional.get();
 	}
 	
@@ -60,9 +67,11 @@ public class TicketService {
 		UserDTO userDTO = securityClient.loadUserInfo();
 		
 		if (isAdmin) {
+			LOG.info("Ticket por usuário: " + userDTO.getUsername());
 			return ticketRepository.findByAssigneeUsername(userDTO.getUsername());
 		}
 		
+		LOG.info("Ticket por usuário: " + userDTO.getUsername());
 		return ticketRepository.findByApplicantUsername(userDTO.getUsername());
 	}
 	
@@ -79,6 +88,7 @@ public class TicketService {
 	}
 	
 	public List<Ticket> getTicketsByStatus(Integer status) {
+		LOG.info("Ticket por status: " + status);
 		return ticketRepository.findByStatus(status);
 	}
 
@@ -94,6 +104,7 @@ public class TicketService {
 		UserDTO userDTO = securityClient.loadUserInfo();
 		ticket.setAssigneeUsername(userDTO.getUsername());
 		ticket.setAssigneeEmail(userDTO.getEmail());
+		LOG.info("Ticket: " + id + " assumido por: " + userDTO.getUsername());
 		return ticket;
 	}
 	
@@ -110,6 +121,7 @@ public class TicketService {
 		ticket.setResolution(ticketUpdateDTO.getResolution());
 		ticket.setClosedAt(closedAt);
 		ticket.setStatus(TicketStatus.CLOSED);
+		LOG.info("Ticket: " + id + "fechado");
 		return ticket;
 	}
 	

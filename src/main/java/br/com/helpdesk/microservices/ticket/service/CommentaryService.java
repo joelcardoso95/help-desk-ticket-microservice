@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import br.com.helpdesk.microservices.ticket.service.exceptions.ObjectNotFoundExc
 @Service
 public class CommentaryService {
 	
+	private static final Logger LOG = LoggerFactory.getLogger(CommentaryService.class);
+	
 	@Autowired
 	private CommentaryRepository commentaryRepository;
 	
@@ -28,7 +32,7 @@ public class CommentaryService {
 	private TicketService ticketService;
 	
 	public Commentary createCommentary(Commentary commentary) {
-		commentary.setId(null);
+		LOG.info("Salvando comentário");
 		return commentaryRepository.save(commentary);
 	}
 	
@@ -40,9 +44,11 @@ public class CommentaryService {
 		Optional<Commentary> commentaryOptional = commentaryRepository.findById(id);
 		
 		if (commentaryOptional.isEmpty()) {
+			LOG.info("Comentário não encontrado: " + id);
 			throw new ObjectNotFoundException("Comentário não encontrado");
 		}
 		
+		LOG.info("Comentário encontrado: " + id);
 		return commentaryOptional.get();
 	}
 	
@@ -51,6 +57,7 @@ public class CommentaryService {
 		
 		try {
 			commentaryRepository.deleteById(id);
+			LOG.info("Comentário: " + id + "deletado");
 		} catch (Exception e) {
 			throw new Exception();
 		}
